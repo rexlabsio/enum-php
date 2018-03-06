@@ -1,0 +1,40 @@
+{
+  "name": "rexlabs/hyper-http",
+  "description": "Enumeration (enum) implementation for PHP",
+  "keywords": [
+    "enum",
+    "enumeration",
+    "library",
+    "constants",
+    "valuelist"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "Jodie Dunlop",
+      "email": "jodie.dunlop@rexlabs.com.au"
+    }
+  ],
+  "require": {
+    "php": "^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rexlabs\\Enum\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rexlabs\\Enum\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "tests": "phpunit --colors=always",
+    "coverage": "phpunit --coverage-html ./tests/report"
+  },
+  "license": "MIT"
+}
