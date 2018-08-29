@@ -4,6 +4,7 @@ namespace Rexlabs\Enum;
 
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
+use Rexlabs\Enum\Exceptions\InvalidValueException;
 
 /**
  * Enum implementation.
@@ -91,6 +92,16 @@ abstract class Enum
     }
 
     /**
+     * Return flipped map where keys become values and vice versa
+     *
+     * @return array
+     */
+    public static function flip(): array
+    {
+        return array_flip(static::map()) ?? [];
+    }
+
+    /**
      * Return the values
      *
      * @return array
@@ -173,6 +184,22 @@ abstract class Enum
         static::checkExists($key);
 
         return static::cachedMap()[$key];
+    }
+
+    /**
+     * Returns the constant for a given value
+     *
+     * @param str|int $value
+     * @return Mixed
+     */
+    public static function fromValue($value)
+    {
+        $flipped = static::flip();
+        if ( ! array_key_exists( $value, $flipped )) {
+            throw new InvalidValueException("Value '{$value}' not found in map for " . static::class);
+        }
+
+        return $flipped[$value];
     }
 
     /**
