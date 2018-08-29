@@ -6,10 +6,10 @@ use PHPUnit\Framework\TestCase;
 use Rexlabs\Enum\Enum;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
+use Rexlabs\Enum\Exceptions\InvalidValueException;
 use Rexlabs\Enum\Tests\Stub\Animal;
 use Rexlabs\Enum\Tests\Stub\Fruit;
 use Rexlabs\Enum\Tests\Stub\Bevs;
-use Rexlabs\Enum\Exceptions\InvalidValueException;
 
 class EnumTest extends TestCase
 {
@@ -169,13 +169,13 @@ class EnumTest extends TestCase
 
     public function test_flipable_trait_gets_constant_by_value()
     {
-        $this->assertEquals(Bevs::BREW, Bevs::constantOf('Corona'));
-        $this->assertEquals(Bevs::RUM, Bevs::constantOf('Bundaberg'));
+        $this->assertEquals(Bevs::BREW, Bevs::fromValue('Corona'));
+        $this->assertEquals(Bevs::RUM, Bevs::fromValue('Bundaberg'));
     }
 
     public function test_flipable_trait_throws_exception_with_invalid_value()
     {
         $this->expectException(InvalidValueException::class);
-        $this->assertEquals(Bevs::BREW, Bevs::constantOf('Water'));
+        $this->assertEquals(Bevs::BREW, Bevs::fromValue('Water'));
     }
 }

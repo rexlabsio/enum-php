@@ -3,12 +3,9 @@
 namespace Rexlabs\Enum\Tests\Stub;
 
 use Rexlabs\Enum\Enum;
-use Rexlabs\Enum\Traits\Flipable;
 
 class Bevs extends Enum
 {
-    use Flipable;
-
     const BREW = 0;
     const RED_WINE = 1;
     const WHITE_WINE = 2;
