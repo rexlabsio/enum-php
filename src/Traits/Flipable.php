@@ -28,6 +28,7 @@ trait Flipable
         if ( ! array_key_exists($value, $flipped)) {
             throw new InvalidValueException("Value '{$value}' not found in map for " . static::class);
         }
+
         return $flipped[$value];
     }
 }
