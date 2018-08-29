@@ -13,20 +13,21 @@ trait Flipable
      */
     public static function flip(): array
     {
-        return array_flip(static::cachedMap());
+        return array_flip(static::map());
     }
 
     /**
      * Returns the constant for a given value
      *
      * @param [type] $value
-     * @return array
+     * @return Mixed
      */
-    public static function constantOf($value): array
+    public static function constantOf($value)
     {
-        if (! in_array($value, static::cachedMap())) {
+        $flipped = static::flip();
+        if ( ! array_key_exists($value, $flipped)) {
             throw new InvalidValueException("Value '{$value}' not found in map for " . static::class);
         }
-        return static::flip()[$value];
+        return $flipped[$value];
     }
 }

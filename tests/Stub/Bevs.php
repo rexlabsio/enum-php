@@ -5,7 +5,7 @@ namespace Rexlabs\Enum\Tests\Stub;
 use Rexlabs\Enum\Enum;
 use Rexlabs\Enum\Traits\Flipable;
 
-class Animal extends Enum
+class Bevs extends Enum
 {
     use Flipable;
 
@@ -21,7 +21,7 @@ class Animal extends Enum
             self::BREW => 'Corona',
             self::RED_WINE => 'Red Wine',
             self::WHITE_WINE => 'White Wine',
-            self::RUM => 'Bunderberg',
+            self::RUM => 'Bundaberg',
             self::BOURBON => 'Jack Daniels',
         ];
     }

@@ -8,6 +8,7 @@ use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Tests\Stub\Animal;
 use Rexlabs\Enum\Tests\Stub\Fruit;
+use Rexlabs\Enum\Tests\Stub\Bevs;
 
 class EnumTest extends TestCase
 {
@@ -152,5 +153,22 @@ class EnumTest extends TestCase
     public function test_casting_enum_to_string_returns_identifier()
     {
         $this->assertEquals(Fruit::APPLE()->identifier(), (string)Fruit::APPLE());
+    }
+
+    public function test_flipable_trait_flips_map()
+    {
+        $this->assertEquals([
+            'Corona' => Bevs::BREW,
+            'Red Wine' => Bevs::RED_WINE,
+            'White Wine' => Bevs::WHITE_WINE,
+            'Bundaberg' => Bevs::RUM,
+            'Jack Daniels' => Bevs::BOURBON,
+        ], Bevs::flip());
+    }
+
+    public function test_flipable_trait_gets_constant_by_value()
+    {
+        $this->assertEquals(Bevs::BREW, Bevs::constantOf('Corona'));
+        $this->assertEquals(Bevs::RUM, Bevs::constantOf('Bundaberg'));
     }
 }
