@@ -9,6 +9,7 @@ use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Tests\Stub\Animal;
 use Rexlabs\Enum\Tests\Stub\Fruit;
 use Rexlabs\Enum\Tests\Stub\Bevs;
+use Rexlabs\Enum\Exceptions\InvalidValueException;
 
 class EnumTest extends TestCase
 {
@@ -170,5 +171,11 @@ class EnumTest extends TestCase
     {
         $this->assertEquals(Bevs::BREW, Bevs::constantOf('Corona'));
         $this->assertEquals(Bevs::RUM, Bevs::constantOf('Bundaberg'));
+    }
+
+    public function test_flipable_trait_throws_exception_with_invalid_value()
+    {
+        $this->expectException(InvalidValueException::class);
+        $this->assertEquals(Bevs::BREW, Bevs::constantOf('Water'));
     }
 }
