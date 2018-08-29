@@ -38,13 +38,13 @@ class Animal extends Enum
     const DOG = 'dog';
     const HORSE = 'horse';
     const PIGEON = 'skyrat';
-    
+
     // Optional: Provide a map() method to assign values to your keys.
     // Your map method should return an array key => optional value
     public static function map(): array
     {
         return [
-            self::CAT => 'Kitty-cat',       
+            self::CAT => 'Kitty-cat',
             self::DOG => null,
             self::HORSE => null,
             self::PIGEON => ['you','filthy','animal'],
@@ -64,7 +64,7 @@ echo Animal::CAT;                   // "kitty"
 
 // Get an Animal instance for 'CAT'
 $cat = Animal::CAT();               // (object)Animal
-$cat->identifier();                 // "CAT"  
+$cat->identifier();                 // "CAT"
 $cat->key();                        // "kitty"
 $cat->value();                      // "Kitty-cat"
 $cat->is(Animal::CAT);              // (boolean)true
@@ -92,6 +92,7 @@ composer require rexlabs/enum
 ## More Examples
 
 
+
 ### Type-hinting
 
 Now you can type-hint your `Enum` object as a dependency:
@@ -103,15 +104,15 @@ function sayHelloTo(Animal $animal) {
     if (is_array($name)) {
         $name = implode(' ', $name);
     }
-    
+
     echo "Greeting for {$animal->identifier()}: Hello $name\n";
-   
+
 }
 
 // Get a new instance
 sayHelloTo(Animal::CAT());      // "Greeting for CAT: Hello Kitty-cat"
-sayHelloTo(Animal::DOG());      // "Greeting for DOG: Hello dog" 
-sayHelloTo(Animal::PIGEON());   // "Greeting for PIGEON: Hello you filthy animal" 
+sayHelloTo(Animal::DOG());      // "Greeting for DOG: Hello dog"
+sayHelloTo(Animal::PIGEON());   // "Greeting for PIGEON: Hello you filthy animal"
 ```
 
 
@@ -168,6 +169,10 @@ The `__toString()` method is defined to return the instance identifier (constant
 
 Returns an array which maps the constants, and any values.  This method is implemented in a sub-class.
 
+### flip()
+
+If a map exists, this returns an array with a flipped mapping - value => constant
+
 ### keys()
 
 Returns an array of constant keys.
@@ -196,6 +201,11 @@ Returns true if the given identifier is declared as a `const` within the class.
 ### valueFor(string $key)
 
 Returns the value (or null if not mapped) for the given key (as declared in the `map()` method).
+
+### fromValue(string $value)
+
+Returns the constant for the given value (as declared in the `map()` method).
+> Caveats: Only works with single dimension arrays and it will only return the last key if multiple keys have the same value.
 
 ### exists(string $key)
 
