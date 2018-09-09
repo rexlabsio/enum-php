@@ -75,6 +75,10 @@ Animal::DOG()->value();             // (null)  - No value was assigned in map()
 
 Animal::PIGEON()->key();            // "skyrat"
 Animal::PIGEON()->value();          // (array)['you', 'filthy', 'animal']
+
+// Init from key in variable
+$kitty = 'kitty';
+$cat = Animal::initFromKey($kitty);
 ```
 
 ## Dependencies
@@ -206,6 +210,10 @@ Returns the value (or null if not mapped) for the given key (as declared in the 
 
 Returns the constant for the given value (as declared in the `map()` method).
 > Caveats: Only works with single dimension arrays and it will only return the last key if multiple keys have the same value.
+
+### initFromKey($key)
+
+Create instance of this Enum from the key.
 
 ### exists(string $key)
 

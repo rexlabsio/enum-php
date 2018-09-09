@@ -203,6 +203,8 @@ abstract class Enum
     }
 
     /**
+     * Create instance of this Enum from the key.
+     *
      * @param string|int $key
      *
      * @return Enum
