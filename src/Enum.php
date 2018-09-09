@@ -207,7 +207,7 @@ abstract class Enum
      *
      * @param string|int $key
      *
-     * @return Enum
+     * @return static
      * @throws InvalidKeyException
      */
     public static function initFromKey($key): self
