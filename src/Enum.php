@@ -203,6 +203,23 @@ abstract class Enum
     }
 
     /**
+     * @param string|int $key
+     *
+     * @return Enum
+     * @throws InvalidKeyException
+     */
+    public static function initFromKey($key): self
+    {
+        foreach (self::constantMap() as $identifier => $validKey) {
+            if ($key === $validKey) {
+                return static::{$identifier}();
+            }
+        }
+
+        throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
+    }
+
+    /**
      * Determine if a key exists within the constant map
      *
      * @param mixed|string $key
