@@ -1,6 +1,6 @@
-# 1.2.0
+# [Unreleased]
 
-- Add Enum::initFromKey($key)
+- Add Enum::instanceFromKey($key)
 
 # 1.1.0
 

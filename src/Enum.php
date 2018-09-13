@@ -210,7 +210,7 @@ abstract class Enum
      * @return static
      * @throws InvalidKeyException
      */
-    public static function initFromKey($key): self
+    public static function instanceFromKey($key): self
     {
         foreach (self::constantMap() as $identifier => $validKey) {
             if ($key === $validKey) {
