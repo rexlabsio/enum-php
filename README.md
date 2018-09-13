@@ -75,6 +75,10 @@ Animal::DOG()->value();             // (null)  - No value was assigned in map()
 
 Animal::PIGEON()->key();            // "skyrat"
 Animal::PIGEON()->value();          // (array)['you', 'filthy', 'animal']
+
+// Get a new Enum instance from a given key
+$kitty = 'kitty';
+$cat = Animal::instanceFromKey($kitty);
 ```
 
 ## Dependencies
@@ -206,6 +210,10 @@ Returns the value (or null if not mapped) for the given key (as declared in the 
 
 Returns the constant for the given value (as declared in the `map()` method).
 > Caveats: Only works with single dimension arrays and it will only return the last key if multiple keys have the same value.
+
+### instanceFromKey($key)
+
+Create instance of this Enum from the given key.
 
 ### exists(string $key)
 

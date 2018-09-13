@@ -178,4 +178,16 @@ class EnumTest extends TestCase
         $this->expectException(InvalidValueException::class);
         $this->assertEquals(Bevs::BREW, Bevs::fromValue('Water'));
     }
+
+    public function test_get_instance_via_key()
+    {
+        $animal = Animal::instanceFromKey('kitty');
+        $this->assertTrue($animal->is(Animal::CAT()));
+    }
+
+    public function test_get_instance_via_invalid_key_throws_exception()
+    {
+        $this->expectException(InvalidKeyException::class);
+        Animal::instanceFromKey('_invalid_key_');
+    }
 }
