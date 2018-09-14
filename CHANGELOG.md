@@ -5,6 +5,7 @@
 - **Breaking** Change `Enum::identifiers()` to `Enum::names()`
 - **Breaking** Change `Enum::getKeyForIdentfier()` to `Enum::keyForName()`
 - **Breaking** Change `Enum::valueFor()` to `Enum::valueForKey()`
+- Add `Enum::nameForKey()` to get the constant name for a given key
 
 # 1.1.0
 

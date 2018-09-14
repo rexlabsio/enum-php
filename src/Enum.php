@@ -123,7 +123,7 @@ abstract class Enum
     }
 
     /**
-     * Return a map of constant names and their assigned key value.
+     * Return a map of constant names and their associated key.
      *
      * @return array
      */
@@ -173,11 +173,11 @@ abstract class Enum
     }
 
     /**
-     * Get the value for a given key
+     * Get the value for a given key.
      *
-     * @param mixed|string $key
+     * @param mixed|int|string $key
      *
-     * @return mixed
+     * @return mixed|null
      * @throws InvalidKeyException
      */
     public static function valueForKey($key)
@@ -185,6 +185,24 @@ abstract class Enum
         static::checkExists($key);
 
         return static::cachedMap()[$key];
+    }
+
+    /**
+     * Get the constant name for a given key.
+     *
+     * @param mixed|int|string $key
+     *
+     * @return string
+     * @throws InvalidKeyException
+     */
+    public static function nameForKey($key): string
+    {
+        $name = array_search($key, self::constantMap(), true);
+        if ($name === false) {
+            throw new InvalidKeyException("Invalid key: $key in " . static::class);
+        }
+
+        return $name;
     }
 
     /**

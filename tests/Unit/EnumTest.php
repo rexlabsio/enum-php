@@ -87,6 +87,17 @@ class EnumTest extends TestCase
         Fruit::valueForKey('_does_not_exist_');
     }
 
+    public function test_can_get_name_for_key()
+    {
+        $this->assertEquals(Fruit::APPLE()->name(), Fruit::nameForKey(Fruit::APPLE));
+    }
+
+    public function test_get_name_for_invalid_key_throws_exception()
+    {
+        $this->expectException(InvalidKeyException::class);
+        Fruit::nameForKey('_does_not_exist_');
+    }
+
     public function test_can_instantiate_instance()
     {
         $fruit = Fruit::BANANA();
