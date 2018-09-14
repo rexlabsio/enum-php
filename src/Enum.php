@@ -318,7 +318,7 @@ abstract class Enum
     /**
      * Returns true if this instance is equal to the given key or Enum instance.
      *
-     * @param Enum|string $compare
+     * @param static|mixed $compare
      *
      * @return bool
      * @throws InvalidEnumException
@@ -329,10 +329,10 @@ abstract class Enum
             return $compare->name() === $this->name();
         }
 
-        if (\is_string($compare)) {
+        if (\is_scalar($compare)) {
             return $compare === $this->key();
         }
 
-        throw new InvalidEnumException('Enum or string expected but ' . \gettype($compare) . ' given.');
+        throw new InvalidEnumException('Enum instance or key (scalar) expected but ' . \gettype($compare) . ' given.');
     }
 }

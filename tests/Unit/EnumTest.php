@@ -155,6 +155,9 @@ class EnumTest extends TestCase
         $this->assertTrue(Fruit::APPLE()->is(Fruit::APPLE));
         $this->assertFalse(Fruit::APPLE()->is(Fruit::BANANA));
         $this->assertFalse(Fruit::APPLE()->is('_not_defined_'));
+
+        // When key is not a string
+        $this->assertTrue(Number::TWENTY_FOUR()->is(24));
     }
 
     public function test_comparing_enum_to_an_invalid_argument_throws_exception()

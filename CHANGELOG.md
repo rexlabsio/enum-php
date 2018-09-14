@@ -9,6 +9,7 @@
 - **Breaking** Change `Enum::exists()` to `Enum::isValidKey()`
 - **Breaking** Change `Enum::checkExists()` to `Enum::requireValidKey()`
 - Fix `$instance->key()` to handle non-string keys
+- Fix `$instance->is()` to handle non-string keys
 
 # 1.1.0
 
