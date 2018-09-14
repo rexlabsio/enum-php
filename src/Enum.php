@@ -182,7 +182,7 @@ abstract class Enum
      */
     public static function valueForKey($key)
     {
-        static::checkExists($key);
+        static::requireValidKey($key);
 
         return static::cachedMap()[$key];
     }
@@ -247,7 +247,7 @@ abstract class Enum
      *
      * @return boolean
      */
-    public static function exists($key): bool
+    public static function isValidKey($key): bool
     {
         return array_key_exists($key, static::cachedMap());
     }
@@ -255,13 +255,13 @@ abstract class Enum
     /**
      * Check if the key exists or throw an exception
      *
-     * @param mixed|string $key
+     * @param mixed|string|int $key
      *
      * @throws InvalidKeyException
      */
-    public static function checkExists($key)
+    public static function requireValidKey($key)
     {
-        if (!static::exists($key)) {
+        if (!static::isValidKey($key)) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
         }
     }

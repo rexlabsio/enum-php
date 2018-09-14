@@ -6,6 +6,8 @@
 - **Breaking** Change `Enum::getKeyForIdentfier()` to `Enum::keyForName()`
 - **Breaking** Change `Enum::valueFor()` to `Enum::valueForKey()`
 - Add `Enum::nameForKey()` to get the constant name for a given key
+- **Breaking** Change `Enum::exists()` to `Enum::isValidKey()`
+- **Breaking** Change `Enum::checkExists()` to `Enum::requireValidKey()`
 
 # 1.1.0
 
