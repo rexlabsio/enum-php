@@ -64,7 +64,7 @@ echo Animal::CAT;                   // "kitty"
 
 // Get an Animal instance for 'CAT'
 $cat = Animal::CAT();               // (object)Animal
-$cat->identifier();                 // "CAT"
+$cat->name();                       // "CAT"
 $cat->key();                        // "kitty"
 $cat->value();                      // "Kitty-cat"
 $cat->is(Animal::CAT);              // (boolean)true
@@ -109,7 +109,7 @@ function sayHelloTo(Animal $animal) {
         $name = implode(' ', $name);
     }
 
-    echo "Greeting for {$animal->identifier()}: Hello $name\n";
+    echo "Greeting for {$animal->name()}: Hello $name\n";
 
 }
 
@@ -124,12 +124,12 @@ sayHelloTo(Animal::PIGEON());   // "Greeting for PIGEON: Hello you filthy animal
 
 Each instance of `Enum` provides the following methods:
 
-### identifier()
+### name()
 
-Returns the constant identifier.
+Returns the constant name.
 
 ```php
-$enum->identifier();
+$enum->name();
 ```
 
 ### key()
@@ -160,7 +160,7 @@ $enum->is(Animal::CAT());     // Compare to instance
 
 ### __toString()
 
-The `__toString()` method is defined to return the instance identifier (constant name).
+The `__toString()` method is defined to return the constant name.
 
 ```php
 (string)Animal::CAT();      // "CAT"
@@ -186,21 +186,21 @@ Returns an array of constant keys.
 Returns an array of values defined in `map()`. If `map()` is not implemented then an array of null values will
 be returned.
 
-### identifiers()
+### names()
 
-Returns an array of all the constant identifiers declared with `const MY_CONST = 'key'`
+Returns an array of all the constant names declared with the class.
 
 ### constantMap()
 
-Returns an array of CONST => key, for all of the constant identifiers declared with `const MY_CONST = 'key'`.
+Returns an array of CONST => key, for all of the constant names declared within the class.
 
-### getKeyForIdentifier(string $identifier)
+### getKeyForName(string $name)
 
-Returns the key for the given constant identifier.
+Returns the key for the given constant name.
 
-### identifierExists(string $identifier)
+### nameExists(string $name)
 
-Returns true if the given identifier is declared as a `const` within the class.
+Returns true if the given name is declared as a `const` within the class.
 
 ### valueFor(string $key)
 

@@ -14,14 +14,14 @@ use Rexlabs\Enum\Exceptions\InvalidValueException;
  */
 abstract class Enum
 {
-    /** @var array Cache of CONSTANT identifier => value per class */
+    /** @var array Cache of constant name => value per class */
     public static $constants = [];
 
     /** @var array Cache of what map() returns per class */
     public static $cachedMap = [];
 
     /** @var string */
-    protected $identifier;
+    protected $name;
 
     /** @var mixed */
     protected $key;
@@ -32,13 +32,13 @@ abstract class Enum
     /**
      * Enum constructor.
      *
-     * @param string $identifier
+     * @param string $name
      * @param mixed  $key
      * @param mixed  $value
      */
-    public function __construct(string $identifier, $key, $value)
+    public function __construct(string $name, $key, $value)
     {
-        $this->identifier = $identifier;
+        $this->name = $name;
         $this->key = $key;
         $this->value = $value;
     }
@@ -112,17 +112,18 @@ abstract class Enum
     }
 
     /**
-     * Return the constant identifiers
+     * Return the constant names
+     * Each constant declared in the class will be returned.
      *
      * @return array
      */
-    public static function identifiers(): array
+    public static function names(): array
     {
         return array_keys(static::constantMap());
     }
 
     /**
-     * Return a map of constant identifiers and their assigned key value.
+     * Return a map of constant names and their assigned key value.
      *
      * @return array
      */
@@ -148,27 +149,27 @@ abstract class Enum
      */
     public static function __callStatic($name, $arguments)
     {
-        $key = static::getKeyForIdentifier($name);
+        $key = static::keyForName($name);
         if ($key === null) {
-            throw new InvalidEnumException("Invalid constant identifier '{$name}' in " . static::class);
+            throw new InvalidEnumException("Invalid constant name '{$name}' in " . static::class);
         }
 
         return new static($name, $key, static::valueFor($key));
     }
 
     /**
-     * Get the key for the given constant identifier
+     * Get the key for the given constant name
      *
-     * @param string $identifier
+     * @param string $name
      *
      * @return null|mixed|string
      */
-    public static function getKeyForIdentifier(string $identifier)
+    public static function keyForName(string $name)
     {
         $key = null;
         $map = static::constantMap();
 
-        return $map[$identifier] ?? null;
+        return $map[$name] ?? null;
     }
 
     /**
@@ -212,9 +213,9 @@ abstract class Enum
      */
     public static function instanceFromKey($key): self
     {
-        foreach (self::constantMap() as $identifier => $validKey) {
+        foreach (self::constantMap() as $name => $validKey) {
             if ($key === $validKey) {
-                return static::{$identifier}();
+                return static::{$name}();
             }
         }
 
@@ -248,34 +249,35 @@ abstract class Enum
     }
 
     /**
-     * @param string $identifier
+     * Check if the given constant name is valid.
+     * @param string $name
      *
      * @return bool
      */
-    public static function identifierExists(string $identifier): bool
+    public static function isValidName(string $name): bool
     {
-        return static::getKeyForIdentifier($identifier) !== null;
+        return static::keyForName($name) !== null;
     }
 
     /**
-     * Returns the identifier (constant).
-     * Same as $enum->identifier().
+     * Overloads the string behavior, to return the constant name.
+     * Same as $instance->name().
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->identifier();
+        return $this->name();
     }
 
     /**
-     * Returns the identifier (constant).
+     * Returns the constant name.
      *
      * @return string
      */
-    public function identifier(): string
+    public function name(): string
     {
-        return $this->identifier;
+        return $this->name;
     }
 
     /**
@@ -309,7 +311,7 @@ abstract class Enum
     public function is($compare): bool
     {
         if ($compare instanceof self) {
-            return $compare->identifier() === $this->identifier();
+            return $compare->name() === $this->name();
         }
 
         if (\is_string($compare)) {

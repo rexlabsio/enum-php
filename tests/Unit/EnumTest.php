@@ -13,20 +13,20 @@ use Rexlabs\Enum\Tests\Stub\Bevs;
 
 class EnumTest extends TestCase
 {
-    public function test_can_get_identifiers()
+    public function test_can_get_names()
     {
         $this->assertEquals([
             'APPLE',
             'BANANA',
             'CHERRY',
-        ], Fruit::identifiers());
+        ], Fruit::names());
 
         $this->assertEquals([
             'CAT',
             'DOG',
             'HORSE',
             'PIGEON',
-        ], Animal::identifiers());
+        ], Animal::names());
     }
 
     public function test_can_get_keys()
@@ -45,10 +45,10 @@ class EnumTest extends TestCase
         ], Animal::keys());
     }
 
-    public function test_can_test_identifier_exists()
+    public function test_can_test_name_exists()
     {
-        $this->assertTrue(Fruit::identifierExists('APPLE'));
-        $this->assertFalse(Fruit::identifierExists('_does_not_exist_'));
+        $this->assertTrue(Fruit::isValidName('APPLE'));
+        $this->assertFalse(Fruit::isValidName('_does_not_exist_'));
     }
 
 
@@ -96,10 +96,10 @@ class EnumTest extends TestCase
         $this->assertInstanceOf(Animal::class, $animal);
     }
 
-    public function test_can_get_identifier_from_instance()
+    public function test_can_get_name_from_instance()
     {
-        $this->assertEquals('APPLE', Fruit::APPLE()->identifier());
-        $this->assertEquals('DOG', Animal::DOG()->identifier());
+        $this->assertEquals('APPLE', Fruit::APPLE()->name());
+        $this->assertEquals('DOG', Animal::DOG()->name());
     }
 
     public function test_can_get_key_from_instance()
@@ -145,15 +145,15 @@ class EnumTest extends TestCase
         $this->assertTrue(Fruit::APPLE()->is([]));
     }
 
-    public function test_that_getting_an_instance_from_an_invalid_identifier_throws_exception()
+    public function test_that_getting_an_instance_from_an_invalid_name_throws_exception()
     {
         $this->expectException(InvalidEnumException::class);
         Fruit::NON_EXISTENT();
     }
 
-    public function test_casting_enum_to_string_returns_identifier()
+    public function test_casting_enum_to_string_returns_name()
     {
-        $this->assertEquals(Fruit::APPLE()->identifier(), (string)Fruit::APPLE());
+        $this->assertEquals(Fruit::APPLE()->name(), (string)Fruit::APPLE());
     }
 
     public function test_flipable_trait_flips_map()
