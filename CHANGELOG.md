@@ -4,6 +4,7 @@
 - **Breaking** Change `$instance->identifier` to `$instance->name()`
 - **Breaking** Change `Enum::identifiers()` to `Enum::names()`
 - **Breaking** Change `Enum::getKeyForIdentfier()` to `Enum::keyForName()`
+- **Breaking** Change `Enum::valueFor()` to `Enum::valueForKey()`
 
 # 1.1.0
 

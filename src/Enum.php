@@ -154,7 +154,7 @@ abstract class Enum
             throw new InvalidEnumException("Invalid constant name '{$name}' in " . static::class);
         }
 
-        return new static($name, $key, static::valueFor($key));
+        return new static($name, $key, static::valueForKey($key));
     }
 
     /**
@@ -180,7 +180,7 @@ abstract class Enum
      * @return mixed
      * @throws InvalidKeyException
      */
-    public static function valueFor($key)
+    public static function valueForKey($key)
     {
         static::checkExists($key);
 

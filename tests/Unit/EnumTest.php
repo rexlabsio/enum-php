@@ -73,18 +73,18 @@ class EnumTest extends TestCase
     public function test_can_get_value_for_key()
     {
         // Not mapped
-        $this->assertEquals(null, Fruit::valueFor(Fruit::APPLE));
+        $this->assertEquals(null, Fruit::valueForKey(Fruit::APPLE));
 
         // Mapped
-        $this->assertEquals('Kitty-cat', Animal::valueFor(Animal::CAT));
-        $this->assertEquals(null, Animal::valueFor(Animal::DOG));
-        $this->assertEquals(['you', 'filthy', 'animal'], Animal::valueFor('skyrat'));
+        $this->assertEquals('Kitty-cat', Animal::valueForKey(Animal::CAT));
+        $this->assertEquals(null, Animal::valueForKey(Animal::DOG));
+        $this->assertEquals(['you', 'filthy', 'animal'], Animal::valueForKey('skyrat'));
     }
 
     public function test_value_for_invalid_key_throws_exception()
     {
         $this->expectException(InvalidKeyException::class);
-        Fruit::valueFor('_does_not_exist_');
+        Fruit::valueForKey('_does_not_exist_');
     }
 
     public function test_can_instantiate_instance()
