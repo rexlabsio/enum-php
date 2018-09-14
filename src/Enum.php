@@ -158,7 +158,7 @@ abstract class Enum
     }
 
     /**
-     * Get the key for the given constant name
+     * Get the key for the given constant name.
      *
      * @param string $name
      *
@@ -166,10 +166,7 @@ abstract class Enum
      */
     public static function keyForName(string $name)
     {
-        $key = null;
-        $map = static::constantMap();
-
-        return $map[$name] ?? null;
+        return static::constantMap()[$name] ?? null;
     }
 
     /**
