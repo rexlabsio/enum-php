@@ -10,6 +10,7 @@ use Rexlabs\Enum\Exceptions\InvalidValueException;
 use Rexlabs\Enum\Tests\Stub\Animal;
 use Rexlabs\Enum\Tests\Stub\Fruit;
 use Rexlabs\Enum\Tests\Stub\Bevs;
+use Rexlabs\Enum\Tests\Stub\Number;
 
 class EnumTest extends TestCase
 {
@@ -117,6 +118,12 @@ class EnumTest extends TestCase
     {
         $this->assertEquals('apple', Fruit::APPLE()->key());
         $this->assertEquals('dog', Animal::DOG()->key());
+    }
+
+    public function test_can_get_key_from_instance_with_int_keys()
+    {
+        $this->assertEquals(10, Number::TEN()->key());
+        $this->assertEquals(24, Number::TWENTY_FOUR()->key());
     }
 
     public function test_can_get_value_from_instance()

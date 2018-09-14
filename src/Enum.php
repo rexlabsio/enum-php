@@ -298,9 +298,9 @@ abstract class Enum
     /**
      * Returns the value assigned to the constant declaration.
      *
-     * @return mixed|string
+     * @return mixed|string|int
      */
-    public function key(): string
+    public function key()
     {
         return $this->key;
     }

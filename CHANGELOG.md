@@ -8,6 +8,7 @@
 - Add `Enum::nameForKey()` to get the constant name for a given key
 - **Breaking** Change `Enum::exists()` to `Enum::isValidKey()`
 - **Breaking** Change `Enum::checkExists()` to `Enum::requireValidKey()`
+- Fix `$instance->key()` to handle non-string keys
 
 # 1.1.0
 
