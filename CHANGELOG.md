@@ -10,6 +10,7 @@
 - **Breaking** Change `Enum::checkExists()` to `Enum::requireValidKey()`
 - Fix `$instance->key()` to handle non-string keys
 - Fix `$instance->is()` to handle non-string keys
+- Fix late-static binding in some methods which referred to `self::`
 
 # 1.1.0
 

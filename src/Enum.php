@@ -194,7 +194,7 @@ abstract class Enum
      */
     public static function nameForKey($key): string
     {
-        $name = array_search($key, self::constantMap(), true);
+        $name = array_search($key, static::constantMap(), true);
         if ($name === false) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
         }
@@ -228,7 +228,7 @@ abstract class Enum
      */
     public static function instanceFromKey($key): self
     {
-        foreach (self::constantMap() as $name => $validKey) {
+        foreach (static::constantMap() as $name => $validKey) {
             if ($key === $validKey) {
                 return static::{$name}();
             }
