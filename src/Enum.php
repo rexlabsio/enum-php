@@ -2,6 +2,7 @@
 
 namespace Rexlabs\Enum;
 
+use Rexlabs\Enum\Exceptions\DuplicateKeyException;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Exceptions\InvalidValueException;
@@ -175,12 +176,15 @@ abstract class Enum
      */
     public static function nameForKey($key): string
     {
-        $name = array_search($key, static::constantMap(), true);
-        if ($name === false) {
+        $matches = array_keys(static::constantMap(), $key, true);
+        $numMatches = \count($matches);
+        if (!$numMatches) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
         }
-
-        return $name;
+        if ($numMatches > 1) {
+            throw new DuplicateKeyException("Unable to resolve name for $key, duplicate matches in " . static::class);
+        }
+        return $matches[0];
     }
 
     /**
