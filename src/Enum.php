@@ -14,11 +14,11 @@ use Rexlabs\Enum\Exceptions\InvalidValueException;
  */
 abstract class Enum
 {
-    /** @var array Cache of constant name => value per class */
-    public static $constants = [];
+    /** @var array Cache of constant name => key per class */
+    public static $namesToKeysMap = [];
 
-    /** @var array Cache of what map() returns per class */
-    public static $cachedMap = [];
+    /** @var array Cache of key => value per class (santized version of what map() returns) */
+    public static $keysToValuesMap = [];
 
     /** @var string */
     protected $name;
@@ -64,7 +64,7 @@ abstract class Enum
     {
         // Ensure the map is indexed by key
         $class = static::class;
-        if (!isset(static::$cachedMap[$class])) {
+        if (!isset(static::$keysToValuesMap[$class])) {
             $cache = null;
             $map = static::map();
             if (!empty($map)) {
@@ -74,10 +74,10 @@ abstract class Enum
                 // No mapping is defined, use the const keys
                 $cache = array_fill_keys(array_values(static::constantMap()), null);
             }
-            static::$cachedMap[$class] = $cache;
+            static::$keysToValuesMap[$class] = $cache;
         }
 
-        return static::$cachedMap[$class];
+        return static::$keysToValuesMap[$class];
     }
 
     /**
@@ -130,11 +130,11 @@ abstract class Enum
     public static function constantMap(): array
     {
         $class = static::class;
-        if (!array_key_exists($class, static::$constants)) {
-            static::$constants[$class] = (new \ReflectionClass($class))->getConstants();
+        if (!array_key_exists($class, static::$namesToKeysMap)) {
+            static::$namesToKeysMap[$class] = (new \ReflectionClass($class))->getConstants();
         }
 
-        return static::$constants[$class];
+        return static::$namesToKeysMap[$class];
     }
 
     /**
