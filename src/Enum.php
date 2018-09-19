@@ -247,13 +247,11 @@ abstract class Enum
      */
     public static function instanceFromKey($key): self
     {
-        foreach (static::constantMap() as $name => $validKey) {
-            if ($key === $validKey) {
-                return static::{$name}();
-            }
+        $name = array_search($key, static::constantMap(), true);
+        if ($name === false) {
+            throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
         }
-
-        throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
+        return static::{$name}();
     }
 
     /**
