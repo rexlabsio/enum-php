@@ -13,8 +13,16 @@
 - Fix late-static binding in some methods which referred to `self::`
 - Add `Enum::instanceFromName($name)` to get an instance via name (alternative to Enum::NAME())
 - Change implementation of `Enum::instanceFromKey($key)` to use array_search
+- **Breaking** Change: the default provided static `map()` method will return an array of constant keys mapped to `null`. 
+Previously it returned an empty array `[]` when not overridden. In practice, this may not effect userland code.
+- **Breaking** Change: you can no longer provide a non-keyed array in an `map()` method implemented
+in your sub-class.  This method should be used to map keys to values (if necessary).  A default map() method is provided
+which maps keys to `null` values.
+- **Breaking** Change `Enum::fromValue($val)` has been renamed to `Enum::keyForValue()`
+- **Breaking** Change: removed `Enum::flip()`
 
 # 1.1.0
+- **Breaki
 
 - Add flip() and fromValue()
 

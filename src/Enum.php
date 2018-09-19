@@ -65,16 +65,7 @@ abstract class Enum
         // Ensure the map is indexed by key
         $class = static::class;
         if (!isset(static::$keysToValuesMap[$class])) {
-            $cache = null;
-            $map = static::map();
-            if (!empty($map)) {
-                $isAssoc = array_keys($map) !== range(0, \count($map) - 1);
-                $cache = $isAssoc ? $map : array_fill_keys(array_values($map), null);
-            } else {
-                // No mapping is defined, use the const keys
-                $cache = array_fill_keys(array_values(static::constantMap()), null);
-            }
-            static::$keysToValuesMap[$class] = $cache;
+            static::$keysToValuesMap[$class] = static::map();
         }
 
         return static::$keysToValuesMap[$class];
@@ -88,17 +79,7 @@ abstract class Enum
      */
     public static function map(): array
     {
-        return [];
-    }
-
-    /**
-     * Return flipped map where keys become values and vice versa
-     *
-     * @return array
-     */
-    public static function flip(): array
-    {
-        return array_flip(static::map()) ?? [];
+        return array_fill_keys(array_values(static::constantMap()), null);
     }
 
     /**
@@ -203,19 +184,21 @@ abstract class Enum
     }
 
     /**
-     * Returns the constant for a given value
+     * Returns the key for a given value (an inverted search).
+     * Since keys can be assigned the same value, only the first match will be
+     * returned.
      *
-     * @param str|int $value
-     * @return Mixed
+     * @param mixed $value
+     * @return mixed
      */
-    public static function fromValue($value)
+    public static function keyForValue($value)
     {
-        $flipped = static::flip();
-        if ( ! array_key_exists( $value, $flipped )) {
+        $key = array_search($value, static::cachedMap(), true);
+        if ($key === false) {
             throw new InvalidValueException("Value '{$value}' not found in map for " . static::class);
         }
 
-        return $flipped[$value];
+        return $key;
     }
 
     /**
