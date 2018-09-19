@@ -200,6 +200,18 @@ class EnumTest extends TestCase
         $this->assertEquals(Bevs::BREW, Bevs::fromValue('Water'));
     }
 
+    public function test_get_instance_via_name()
+    {
+        $fruit = Fruit::instanceFromName('BANANA');
+        $this->assertInstanceOf(Fruit::class, $fruit);
+
+        $animal = Animal::instanceFromName('CAT');
+        $this->assertInstanceOf(Animal::class, $animal);
+
+        $this->expectException(InvalidEnumException::class);
+        Animal::instanceFromName('cat'); // Case sensitive
+    }
+
     public function test_get_instance_via_key()
     {
         $animal = Animal::instanceFromKey('kitty');

@@ -219,6 +219,25 @@ abstract class Enum
     }
 
     /**
+     * Create instance of this Enum from the constant name.
+     * This method is case-sensitive, meaning if you declare your constant
+     * as const MY_CONST = '...', then you will need to provide 'MY_CONST' as
+     * the argument.
+     *
+     * @param string $name
+     *
+     * @return static
+     * @throws InvalidEnumException
+     */
+    public static function instanceFromName($name): self
+    {
+        if (!array_key_exists($name, static::constantMap())) {
+            throw new InvalidEnumException(sprintf('Invalid constant name: %s in %s', $name, static::class));
+        }
+        return static::{$name}();
+    }
+
+    /**
      * Create instance of this Enum from the key.
      *
      * @param string|int $key

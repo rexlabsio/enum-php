@@ -11,6 +11,7 @@
 - Fix `$instance->key()` to handle non-string keys
 - Fix `$instance->is()` to handle non-string keys
 - Fix late-static binding in some methods which referred to `self::`
+- Add `Enum::instanceFromName($name)` to get an instance via name (alternative to Enum::NAME())
 
 # 1.1.0
 
