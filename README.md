@@ -13,72 +13,67 @@ This library provides an Enum / Enumeration implementation for PHP.
 ## Why use this library
 
 * Very simple to implement and use.
-* Flexible values can be assigned.
+* Complex can optionally be mapped by providing a `map()` method.
 * Allows type-hinting when passing enumerated values between methods and classes.
 
 ## Usage
 
-### Extend the Enum class
 
-Extending the `Enum` class is simple;
+First create a new class that extends `\Rexlabs\Enum\Enum` and do the following;
 
-1. Simply declare any constants
+1. Declare your constants
 2. *Optional*: provide a `map()` method:
 
+## Example
+
 ```php
 <?php
-namespace MyProject\Enum;
 
-use Rexlabs\Enum\Enum;
-
-class Animal extends Enum
+class City extends \Rexlabs\Enum\Enum
 {
-    // Declare any constants and their 'key'
-    const CAT = 'kitty';
-    const DOG = 'dog';
-    const HORSE = 'horse';
-    const PIGEON = 'skyrat';
-
-    // Optional: Provide a map() method to assign values to your keys.
-    // Your map method should return an array key => optional value
-    public static function map(): array
+    const BRISBANE = 'Brisbane';
+    const MELBOURNE = 'Melbourne';
+    const SYDNEY = 'Sydney';
+    
+    // OPTIONAL - Provide a map() method if you would like to
+    // map additional data, which will be available from the ->value() method
+    public static function map(): array 
     {
         return [
-            self::CAT => 'Kitty-cat',
-            self::DOG => null,
-            self::HORSE => null,
-            self::PIGEON => ['you','filthy','animal'],
+            static::BRISBANE => ["state"=>"QLD", "population"=>""],
+            static::MELBOURNE => ["state"=>"VIC", "population"=>"5m"],
+            static::SYDNEY => ["state"=>"NSW", "population"=>"5m"],
         ];
     }
+    
 }
-```
 
-### Use your extended class
+// Static access
+echo City::BRISBANE;                 // "Brisbane"
+echo City::MELBOURNE;                // "Melbourne"
+City::names();                       // (array)["BRISBANE", "BRISBANE", "SYDNEY"]
+City::keys();                        // (array)["Brisbane", "Melbourne", "Sydney"]
+City::keyForName('BRISBANE');        // "Brisbane"
+City::nameForKey('Melbourne');       // "MELBOURNE"
+City::isValidKey('Sydney');          // (boolean)true
+City::isValidKey('Paris');           // (boolean)false
+               
+// Getting an instance - all return a City instance.
+$city = City::BRISBANE();                   
+$city = City::instanceFromName('BRISBANE'); 
+$city = City::instanceFromKey('Brisbane');
 
-```php
-<?php
-use MyProject\Enum\Animal;
+// Working with an instance
+$city->name();                       // "BRISBANE"
+$city->key();                        // "Brisbane"
+$city->value()['population'];        // null - no value mapped
+$city->is(City::BRISBANE);           // (boolean)true
+$city->is(City::BRISBANE());         // (boolean)true
+$city->is(City::SYDNEY());           // (boolean)false
 
-// Via class constant
-echo Animal::CAT;                   // "kitty"
-
-// Get an Animal instance for 'CAT'
-$cat = Animal::CAT();               // (object)Animal
-$cat->name();                       // "CAT"
-$cat->key();                        // "kitty"
-$cat->value();                      // "Kitty-cat"
-$cat->is(Animal::CAT);              // (boolean)true
-$cat->is(Animal::CAT());            // (boolean)true
-$cat->is(Animal::PIGEON());         // (boolean)false
-
-Animal::DOG()->value();             // (null)  - No value was assigned in map()
-
-Animal::PIGEON()->key();            // "skyrat"
-Animal::PIGEON()->value();          // (array)['you', 'filthy', 'animal']
-
-// Get a new Enum instance from a given key
-$kitty = 'kitty';
-$cat = Animal::instanceFromKey($kitty);
+// Or ...
+City::SYDNEY()->key();               // "Sydney"
+City::SYDNEY()->value();             // (array)["state"=>"NSW", "population"=>"5m"] 
 ```
 
 ## Dependencies
@@ -93,30 +88,18 @@ To install in your project:
 composer require rexlabs/enum
 ```
 
-## More Examples
-
-
-
 ### Type-hinting
 
 Now you can type-hint your `Enum` object as a dependency:
 
 ```php
 <?php
-function sayHelloTo(Animal $animal) {
-    $name = $animal->value() ?? $animal->key();
-    if (is_array($name)) {
-        $name = implode(' ', $name);
-    }
-
-    echo "Greeting for {$animal->name()}: Hello $name\n";
-
+function announceCity(City $city) {
+    echo "{$city->key()} is located in {$city->value()["state"]}, population: {$city->value()["population"]}\n";
 }
 
 // Get a new instance
-sayHelloTo(Animal::CAT());      // "Greeting for CAT: Hello Kitty-cat"
-sayHelloTo(Animal::DOG());      // "Greeting for DOG: Hello dog"
-sayHelloTo(Animal::PIGEON());   // "Greeting for PIGEON: Hello you filthy animal"
+announceCity(City::SYDNEY());      // "Sydney is located in NSW, population: 5m"
 ```
 
 
@@ -151,11 +134,11 @@ $enum->value();
 
 ### is(Enum|string $compare)
 
-Returns true if this instance is the same as the given constant string or enumeration instance.
+Returns true if this instance is the same as the given constant key or enumeration instance.
 
 ```php
-$enum->is(Animal::CAT);       // Compare to constant key
-$enum->is(Animal::CAT());     // Compare to instance
+$enum->is(City::SYDNEY);       // Compare to constant key
+$enum->is(City::SYDNEY());     // Compare to instance
 ```
 
 ### __toString()
@@ -163,7 +146,7 @@ $enum->is(Animal::CAT());     // Compare to instance
 The `__toString()` method is defined to return the constant name.
 
 ```php
-(string)Animal::CAT();      // "CAT"
+(string)City::SYDNEY();      // "SYDNEY"
 ```
 
 
@@ -171,11 +154,9 @@ The `__toString()` method is defined to return the constant name.
 
 ### map()
 
-Returns an array which maps the constants, and any values.  This method is implemented in a sub-class.
-
-### flip()
-
-If a map exists, this returns an array with a flipped mapping - value => constant
+Returns an array which maps the constant keys to a value.
+This method can be optionally implemented in a sub-class.
+The default implementation returns an array of keys mapped to `null`.
 
 ### keys()
 
@@ -190,38 +171,47 @@ be returned.
 
 Returns an array of all the constant names declared with the class.
 
-### constantMap()
+### namesAndKeys()
 
-Returns an array of CONST => key, for all of the constant names declared within the class.
+Returns an associative array of CONSTANT_NAME => key, for all of the constant names declared within the class.
 
-### getKeyForName(string $name)
+### keyForName(string $name)
 
 Returns the key for the given constant name.
 
-### nameExists(string $name)
+### nameForKey(string $key)
 
-Returns true if the given name is declared as a `const` within the class.
+Returns the constant name for the given key (the inverse of `keyForName`).
 
-### valueFor(string $key)
+### valueForKey(string $key)
 
 Returns the value (or null if not mapped) for the given key (as declared in the `map()` method).
 
-### fromValue(string $value)
+### keyForValue(mixed $value)
 
-Returns the constant for the given value (as declared in the `map()` method).
-> Caveats: Only works with single dimension arrays and it will only return the last key if multiple keys have the same value.
+Returns the key for the given value (as declared in the `map()` method).
+
+> Note: If duplicate values are contained within the `map()` method then only the first key will be returned.
+
+### instanceFromName($name)
+
+Create instance of this Enum from the given constant name.
 
 ### instanceFromKey($key)
 
 Create instance of this Enum from the given key.
 
-### exists(string $key)
+### isValidKey(string $key)
 
 Returns true if the given key exists.
 
-### checkExists(string $key)
+### isValidName(string $name)
 
-Throws a `InvalidArgumentException` if the given key does NOT exist.
+Returns true if the given constant name (case-sensitive) has been declared in the class.
+
+### requireValidKey(string $key)
+
+Throws a `\Rexlabs\Enum\Exceptions\InvalidKeyException` if the given key does NOT exist.
 
 ## Tests
 
