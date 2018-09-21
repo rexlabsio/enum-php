@@ -80,7 +80,7 @@ abstract class Enum
      */
     public static function map(): array
     {
-        return array_fill_keys(array_values(static::constantMap()), null);
+        return array_fill_keys(array_values(static::namesAndKeys()), null);
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class Enum
      */
     public static function names(): array
     {
-        return array_keys(static::constantMap());
+        return array_keys(static::namesAndKeys());
     }
 
     /**
@@ -109,7 +109,7 @@ abstract class Enum
      *
      * @return array
      */
-    public static function constantMap(): array
+    public static function namesAndKeys(): array
     {
         $class = static::class;
         if (!array_key_exists($class, static::$namesToKeysMap)) {
@@ -148,7 +148,7 @@ abstract class Enum
      */
     public static function keyForName(string $name)
     {
-        return static::constantMap()[$name] ?? null;
+        return static::namesAndKeys()[$name] ?? null;
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class Enum
      */
     public static function nameForKey($key): string
     {
-        $matches = array_keys(static::constantMap(), $key, true);
+        $matches = array_keys(static::namesAndKeys(), $key, true);
         $numMatches = \count($matches);
         if (!$numMatches) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
@@ -218,7 +218,7 @@ abstract class Enum
      */
     public static function instanceFromName($name): self
     {
-        if (!array_key_exists($name, static::constantMap())) {
+        if (!array_key_exists($name, static::namesAndKeys())) {
             throw new InvalidEnumException(sprintf('Invalid constant name: %s in %s', $name, static::class));
         }
         return static::{$name}();
@@ -234,7 +234,7 @@ abstract class Enum
      */
     public static function instanceFromKey($key): self
     {
-        $name = array_search($key, static::constantMap(), true);
+        $name = array_search($key, static::namesAndKeys(), true);
         if ($name === false) {
             throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
         }
