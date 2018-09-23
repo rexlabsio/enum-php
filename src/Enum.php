@@ -145,10 +145,16 @@ abstract class Enum
      * @param string $name
      *
      * @return null|mixed|string
+     * @throws InvalidEnumException
      */
     public static function keyForName(string $name)
     {
-        return static::namesAndKeys()[$name] ?? null;
+        $key = static::namesAndKeys()[$name] ?? null;
+        if (!$key) {
+            throw new InvalidEnumException("Invalid constant name: $name in " . static::class);
+        }
+
+        return $key;
     }
 
     /**
@@ -164,6 +170,21 @@ abstract class Enum
         static::requireValidKey($key);
 
         return static::cachedMap()[$key];
+    }
+
+    /**
+     * Get the value for a given constant name.
+     *
+     * @param string $name
+     *
+     * @return mixed|null
+     * @throws InvalidEnumException
+     */
+    public static function valueForName($name)
+    {
+        $key = static::keyForName($name);
+
+        return static::cachedMap()[$key] ?? null;
     }
 
     /**
@@ -275,7 +296,7 @@ abstract class Enum
      */
     public static function isValidName(string $name): bool
     {
-        return static::keyForName($name) !== null;
+        return isset(static::namesAndKeys()[$name]);
     }
 
     /**

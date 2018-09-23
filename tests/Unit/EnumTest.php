@@ -3,7 +3,6 @@
 namespace Rexlabs\Enum\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Rexlabs\Enum\Enum;
 use Rexlabs\Enum\Exceptions\DuplicateKeyException;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
@@ -94,6 +93,18 @@ class EnumTest extends TestCase
     {
         $this->expectException(InvalidKeyException::class);
         Fruit::valueForKey('_does_not_exist_');
+    }
+
+    public function test_can_get_value_for_name()
+    {
+        $this->assertEquals('Apple', Fruit::valueForName('APPLE'));
+        $this->assertEquals(null, Number::valueForName('TWENTY_FOUR'));
+    }
+
+    public function test_value_for_invalid_name_throws_exception()
+    {
+        $this->expectException(InvalidEnumException::class);
+        Fruit::valueForName('_does_not_exist_');
     }
 
     public function test_can_get_name_for_key()

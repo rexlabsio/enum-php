@@ -22,6 +22,7 @@ which maps keys to `null` values.
 - **Breaking** Change: removed `Enum::flip()`
 - **Breaking** Change `Enum::constantMap()` to `Enum::namesAndKeys()`
 - Updated README to reflect API changes
+- Add `Enum::valueForName($name)` for completeness
 
 # 1.1.0
 - **Breaki
