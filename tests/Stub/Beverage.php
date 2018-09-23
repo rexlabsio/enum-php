@@ -4,7 +4,7 @@ namespace Rexlabs\Enum\Tests\Stub;
 
 use Rexlabs\Enum\Enum;
 
-class Bevs extends Enum
+class Beverage extends Enum
 {
     const BREW = 0;
     const RED_WINE = 1;

@@ -3,30 +3,34 @@
 namespace Rexlabs\Enum\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Rexlabs\Enum\Enum;
+use Rexlabs\Enum\Exceptions\DuplicateKeyException;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Exceptions\InvalidValueException;
 use Rexlabs\Enum\Tests\Stub\Animal;
+use Rexlabs\Enum\Tests\Stub\DuplicateKey;
 use Rexlabs\Enum\Tests\Stub\Fruit;
-use Rexlabs\Enum\Tests\Stub\Bevs;
+use Rexlabs\Enum\Tests\Stub\Beverage;
+use Rexlabs\Enum\Tests\Stub\Number;
 
 class EnumTest extends TestCase
 {
-    public function test_can_get_identifiers()
+    public function test_can_get_names()
     {
         $this->assertEquals([
             'APPLE',
             'BANANA',
             'CHERRY',
-        ], Fruit::identifiers());
+            'EGGPLANT',
+            'AUBERGINE',
+        ], Fruit::names());
 
         $this->assertEquals([
             'CAT',
             'DOG',
             'HORSE',
             'PIGEON',
-        ], Animal::identifiers());
+        ], Animal::names());
     }
 
     public function test_can_get_keys()
@@ -35,6 +39,8 @@ class EnumTest extends TestCase
             Fruit::APPLE,
             Fruit::BANANA,
             Fruit::CHERRY,
+            Fruit::EGGPLANT,
+            Fruit::AUBERGINE,
         ], Fruit::keys());
 
         $this->assertEquals([
@@ -45,21 +51,23 @@ class EnumTest extends TestCase
         ], Animal::keys());
     }
 
-    public function test_can_test_identifier_exists()
+    public function test_can_test_name_exists()
     {
-        $this->assertTrue(Fruit::identifierExists('APPLE'));
-        $this->assertFalse(Fruit::identifierExists('_does_not_exist_'));
+        $this->assertTrue(Fruit::isValidName('APPLE'));
+        $this->assertFalse(Fruit::isValidName('_does_not_exist_'));
     }
 
 
     public function test_get_values()
     {
-        // When map() is not defined, should return an array of null
+        // Number does not provide a map() method and therefore all keys are
+        // by default mapped to a value of null
         $this->assertEquals([
             null,
             null,
             null,
-        ], Fruit::values());
+            null,
+        ], Number::values());
 
         // When map() is defined, should return all of the mapped values
         $this->assertEquals([
@@ -73,18 +81,47 @@ class EnumTest extends TestCase
     public function test_can_get_value_for_key()
     {
         // Not mapped
-        $this->assertEquals(null, Fruit::valueFor(Fruit::APPLE));
+        $this->assertEquals(null, Number::valueForKey(Number::TWENTY_FOUR));
 
         // Mapped
-        $this->assertEquals('Kitty-cat', Animal::valueFor(Animal::CAT));
-        $this->assertEquals(null, Animal::valueFor(Animal::DOG));
-        $this->assertEquals(['you', 'filthy', 'animal'], Animal::valueFor('skyrat'));
+        $this->assertEquals('Kitty-cat', Animal::valueForKey(Animal::CAT));
+        $this->assertEquals(null, Animal::valueForKey(Animal::DOG));
+        $this->assertEquals(['you', 'filthy', 'animal'], Animal::valueForKey('skyrat'));
     }
 
     public function test_value_for_invalid_key_throws_exception()
     {
         $this->expectException(InvalidKeyException::class);
-        Fruit::valueFor('_does_not_exist_');
+        Fruit::valueForKey('_does_not_exist_');
+    }
+
+    public function test_can_get_value_for_name()
+    {
+        $this->assertEquals('Apple', Fruit::valueForName('APPLE'));
+        $this->assertEquals(null, Number::valueForName('TWENTY_FOUR'));
+    }
+
+    public function test_value_for_invalid_name_throws_exception()
+    {
+        $this->expectException(InvalidEnumException::class);
+        Fruit::valueForName('_does_not_exist_');
+    }
+
+    public function test_can_get_name_for_key()
+    {
+        $this->assertEquals(Fruit::APPLE()->name(), Fruit::nameForKey(Fruit::APPLE));
+    }
+
+    public function test_get_name_for_invalid_key_throws_exception()
+    {
+        $this->expectException(InvalidKeyException::class);
+        Fruit::nameForKey('_does_not_exist_');
+    }
+
+    public function test_get_name_for_duplicate_key_throws_exception()
+    {
+        $this->expectException(DuplicateKeyException::class);
+        DuplicateKey::nameForKey(DuplicateKey::FIRST);
     }
 
     public function test_can_instantiate_instance()
@@ -96,10 +133,10 @@ class EnumTest extends TestCase
         $this->assertInstanceOf(Animal::class, $animal);
     }
 
-    public function test_can_get_identifier_from_instance()
+    public function test_can_get_name_from_instance()
     {
-        $this->assertEquals('APPLE', Fruit::APPLE()->identifier());
-        $this->assertEquals('DOG', Animal::DOG()->identifier());
+        $this->assertEquals('APPLE', Fruit::APPLE()->name());
+        $this->assertEquals('DOG', Animal::DOG()->name());
     }
 
     public function test_can_get_key_from_instance()
@@ -108,11 +145,16 @@ class EnumTest extends TestCase
         $this->assertEquals('dog', Animal::DOG()->key());
     }
 
+    public function test_can_get_key_from_instance_with_int_keys()
+    {
+        $this->assertEquals(10, Number::TEN()->key());
+        $this->assertEquals(24, Number::TWENTY_FOUR()->key());
+    }
+
     public function test_can_get_value_from_instance()
     {
-        $this->assertEquals(null, Fruit::APPLE()->value());
-        $this->assertEquals(null, Fruit::BANANA()->value());
-
+        $this->assertEquals('Apple', Fruit::APPLE()->value());
+        $this->assertEquals(null, Number::TWENTY_FOUR()->value());
         $this->assertEquals('Kitty-cat', Animal::CAT()->value());
         $this->assertEquals(null, Animal::HORSE()->value());
         $this->assertEquals(['you', 'filthy', 'animal'], Animal::PIGEON()->value());
@@ -137,6 +179,9 @@ class EnumTest extends TestCase
         $this->assertTrue(Fruit::APPLE()->is(Fruit::APPLE));
         $this->assertFalse(Fruit::APPLE()->is(Fruit::BANANA));
         $this->assertFalse(Fruit::APPLE()->is('_not_defined_'));
+
+        // When key is not a string
+        $this->assertTrue(Number::TWENTY_FOUR()->is(24));
     }
 
     public function test_comparing_enum_to_an_invalid_argument_throws_exception()
@@ -145,38 +190,45 @@ class EnumTest extends TestCase
         $this->assertTrue(Fruit::APPLE()->is([]));
     }
 
-    public function test_that_getting_an_instance_from_an_invalid_identifier_throws_exception()
+    public function test_that_getting_an_instance_from_an_invalid_name_throws_exception()
     {
         $this->expectException(InvalidEnumException::class);
         Fruit::NON_EXISTENT();
     }
 
-    public function test_casting_enum_to_string_returns_identifier()
+    public function test_casting_enum_to_string_returns_name()
     {
-        $this->assertEquals(Fruit::APPLE()->identifier(), (string)Fruit::APPLE());
+        $this->assertEquals(Fruit::APPLE()->name(), (string)Fruit::APPLE());
     }
 
-    public function test_flipable_trait_flips_map()
+    public function test_get_key_by_value()
     {
-        $this->assertEquals([
-            'Corona' => Bevs::BREW,
-            'Red Wine' => Bevs::RED_WINE,
-            'White Wine' => Bevs::WHITE_WINE,
-            'Bundaberg' => Bevs::RUM,
-            'Jack Daniels' => Bevs::BOURBON,
-        ], Bevs::flip());
+        $this->assertEquals(Beverage::BREW, Beverage::keyForValue('Corona'));
+        $this->assertEquals(Beverage::RUM, Beverage::keyForValue('Bundaberg'));
     }
 
-    public function test_flipable_trait_gets_constant_by_value()
-    {
-        $this->assertEquals(Bevs::BREW, Bevs::fromValue('Corona'));
-        $this->assertEquals(Bevs::RUM, Bevs::fromValue('Bundaberg'));
-    }
-
-    public function test_flipable_trait_throws_exception_with_invalid_value()
+    public function test_get_key_by_invalid_value_throws_exception()
     {
         $this->expectException(InvalidValueException::class);
-        $this->assertEquals(Bevs::BREW, Bevs::fromValue('Water'));
+        $this->assertEquals(Beverage::BREW, Beverage::keyForValue('Water'));
+    }
+
+    public function test_get_key_by_duplicate_value_returns_first()
+    {
+        // Fruit::EGGPLANT and Fruit::AUBERGINE are both mapped to 'Eggplant'
+        $this->assertEquals(Fruit::EGGPLANT, Fruit::keyForValue('Eggplant'));
+    }
+
+    public function test_get_instance_via_name()
+    {
+        $fruit = Fruit::instanceFromName('BANANA');
+        $this->assertInstanceOf(Fruit::class, $fruit);
+
+        $animal = Animal::instanceFromName('CAT');
+        $this->assertInstanceOf(Animal::class, $animal);
+
+        $this->expectException(InvalidEnumException::class);
+        Animal::instanceFromName('cat'); // Case sensitive
     }
 
     public function test_get_instance_via_key()

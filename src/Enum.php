@@ -2,6 +2,7 @@
 
 namespace Rexlabs\Enum;
 
+use Rexlabs\Enum\Exceptions\DuplicateKeyException;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Exceptions\InvalidValueException;
@@ -14,14 +15,14 @@ use Rexlabs\Enum\Exceptions\InvalidValueException;
  */
 abstract class Enum
 {
-    /** @var array Cache of CONSTANT identifier => value per class */
-    public static $constants = [];
+    /** @var array Cache of constant name => key per class */
+    public static $namesToKeysMap = [];
 
-    /** @var array Cache of what map() returns per class */
-    public static $cachedMap = [];
+    /** @var array Cache of key => value per class (santized version of what map() returns) */
+    public static $keysToValuesMap = [];
 
     /** @var string */
-    protected $identifier;
+    protected $name;
 
     /** @var mixed */
     protected $key;
@@ -32,13 +33,13 @@ abstract class Enum
     /**
      * Enum constructor.
      *
-     * @param string $identifier
+     * @param string $name
      * @param mixed  $key
      * @param mixed  $value
      */
-    public function __construct(string $identifier, $key, $value)
+    public function __construct(string $name, $key, $value)
     {
-        $this->identifier = $identifier;
+        $this->name = $name;
         $this->key = $key;
         $this->value = $value;
     }
@@ -64,20 +65,11 @@ abstract class Enum
     {
         // Ensure the map is indexed by key
         $class = static::class;
-        if (!isset(static::$cachedMap[$class])) {
-            $cache = null;
-            $map = static::map();
-            if (!empty($map)) {
-                $isAssoc = array_keys($map) !== range(0, \count($map) - 1);
-                $cache = $isAssoc ? $map : array_fill_keys(array_values($map), null);
-            } else {
-                // No mapping is defined, use the const keys
-                $cache = array_fill_keys(array_values(static::constantMap()), null);
-            }
-            static::$cachedMap[$class] = $cache;
+        if (!isset(static::$keysToValuesMap[$class])) {
+            static::$keysToValuesMap[$class] = static::map();
         }
 
-        return static::$cachedMap[$class];
+        return static::$keysToValuesMap[$class];
     }
 
     /**
@@ -88,17 +80,7 @@ abstract class Enum
      */
     public static function map(): array
     {
-        return [];
-    }
-
-    /**
-     * Return flipped map where keys become values and vice versa
-     *
-     * @return array
-     */
-    public static function flip(): array
-    {
-        return array_flip(static::map()) ?? [];
+        return array_fill_keys(array_values(static::namesAndKeys()), null);
     }
 
     /**
@@ -112,28 +94,29 @@ abstract class Enum
     }
 
     /**
-     * Return the constant identifiers
+     * Return the constant names
+     * Each constant declared in the class will be returned.
      *
      * @return array
      */
-    public static function identifiers(): array
+    public static function names(): array
     {
-        return array_keys(static::constantMap());
+        return array_keys(static::namesAndKeys());
     }
 
     /**
-     * Return a map of constant identifiers and their assigned key value.
+     * Return a map of constant names and their associated key.
      *
      * @return array
      */
-    public static function constantMap(): array
+    public static function namesAndKeys(): array
     {
         $class = static::class;
-        if (!array_key_exists($class, static::$constants)) {
-            static::$constants[$class] = (new \ReflectionClass($class))->getConstants();
+        if (!array_key_exists($class, static::$namesToKeysMap)) {
+            static::$namesToKeysMap[$class] = (new \ReflectionClass($class))->getConstants();
         }
 
-        return static::$constants[$class];
+        return static::$namesToKeysMap[$class];
     }
 
     /**
@@ -148,58 +131,118 @@ abstract class Enum
      */
     public static function __callStatic($name, $arguments)
     {
-        $key = static::getKeyForIdentifier($name);
+        $key = static::keyForName($name);
         if ($key === null) {
-            throw new InvalidEnumException("Invalid constant identifier '{$name}' in " . static::class);
+            throw new InvalidEnumException("Invalid constant name '{$name}' in " . static::class);
         }
 
-        return new static($name, $key, static::valueFor($key));
+        return new static($name, $key, static::valueForKey($key));
     }
 
     /**
-     * Get the key for the given constant identifier
+     * Get the key for the given constant name.
      *
-     * @param string $identifier
+     * @param string $name
      *
      * @return null|mixed|string
+     * @throws InvalidEnumException
      */
-    public static function getKeyForIdentifier(string $identifier)
+    public static function keyForName(string $name)
     {
-        $key = null;
-        $map = static::constantMap();
+        $key = static::namesAndKeys()[$name] ?? null;
+        if (!$key) {
+            throw new InvalidEnumException("Invalid constant name: $name in " . static::class);
+        }
 
-        return $map[$identifier] ?? null;
+        return $key;
     }
 
     /**
-     * Get the value for a given key
+     * Get the value for a given key.
      *
-     * @param mixed|string $key
+     * @param mixed|int|string $key
      *
-     * @return mixed
+     * @return mixed|null
      * @throws InvalidKeyException
      */
-    public static function valueFor($key)
+    public static function valueForKey($key)
     {
-        static::checkExists($key);
+        static::requireValidKey($key);
 
         return static::cachedMap()[$key];
     }
 
     /**
-     * Returns the constant for a given value
+     * Get the value for a given constant name.
      *
-     * @param str|int $value
-     * @return Mixed
+     * @param string $name
+     *
+     * @return mixed|null
+     * @throws InvalidEnumException
      */
-    public static function fromValue($value)
+    public static function valueForName($name)
     {
-        $flipped = static::flip();
-        if ( ! array_key_exists( $value, $flipped )) {
+        $key = static::keyForName($name);
+
+        return static::cachedMap()[$key] ?? null;
+    }
+
+    /**
+     * Get the constant name for a given key.
+     *
+     * @param mixed|int|string $key
+     *
+     * @return string
+     * @throws InvalidKeyException
+     */
+    public static function nameForKey($key): string
+    {
+        $matches = array_keys(static::namesAndKeys(), $key, true);
+        $numMatches = \count($matches);
+        if (!$numMatches) {
+            throw new InvalidKeyException("Invalid key: $key in " . static::class);
+        }
+        if ($numMatches > 1) {
+            throw new DuplicateKeyException("Unable to resolve name for $key, duplicate matches in " . static::class);
+        }
+        return $matches[0];
+    }
+
+    /**
+     * Returns the key for a given value (an inverted search).
+     * Since keys can be assigned the same value, only the first match will be
+     * returned.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function keyForValue($value)
+    {
+        $key = array_search($value, static::cachedMap(), true);
+        if ($key === false) {
             throw new InvalidValueException("Value '{$value}' not found in map for " . static::class);
         }
 
-        return $flipped[$value];
+        return $key;
+    }
+
+    /**
+     * Create instance of this Enum from the constant name.
+     * This method is case-sensitive, meaning if you declare your constant
+     * as const MY_CONST = '...', then you will need to provide 'MY_CONST' as
+     * the argument.
+     *
+     * @param string $name
+     *
+     * @return static
+     * @throws InvalidEnumException
+     */
+    public static function instanceFromName($name): self
+    {
+        if (!array_key_exists($name, static::namesAndKeys())) {
+            throw new InvalidEnumException(sprintf('Invalid constant name: %s in %s', $name, static::class));
+        }
+        return static::{$name}();
     }
 
     /**
@@ -212,13 +255,11 @@ abstract class Enum
      */
     public static function instanceFromKey($key): self
     {
-        foreach (self::constantMap() as $identifier => $validKey) {
-            if ($key === $validKey) {
-                return static::{$identifier}();
-            }
+        $name = array_search($key, static::namesAndKeys(), true);
+        if ($name === false) {
+            throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
         }
-
-        throw new InvalidKeyException(sprintf('Invalid key: %s in %s', $key, static::class));
+        return static::{$name}();
     }
 
     /**
@@ -228,7 +269,7 @@ abstract class Enum
      *
      * @return boolean
      */
-    public static function exists($key): bool
+    public static function isValidKey($key): bool
     {
         return array_key_exists($key, static::cachedMap());
     }
@@ -236,54 +277,55 @@ abstract class Enum
     /**
      * Check if the key exists or throw an exception
      *
-     * @param mixed|string $key
+     * @param mixed|string|int $key
      *
      * @throws InvalidKeyException
      */
-    public static function checkExists($key)
+    public static function requireValidKey($key)
     {
-        if (!static::exists($key)) {
+        if (!static::isValidKey($key)) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
         }
     }
 
     /**
-     * @param string $identifier
+     * Check if the given constant name is valid.
+     * @param string $name
      *
      * @return bool
      */
-    public static function identifierExists(string $identifier): bool
+    public static function isValidName(string $name): bool
     {
-        return static::getKeyForIdentifier($identifier) !== null;
+        return array_key_exists($name, static::namesAndKeys());
     }
 
     /**
-     * Returns the identifier (constant).
-     * Same as $enum->identifier().
+     * Overloads the string behavior, to return the constant name.
+     * Same as $instance->name().
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->identifier();
+        return $this->name();
     }
 
     /**
-     * Returns the identifier (constant).
+     * Returns the constant name.
      *
      * @return string
      */
-    public function identifier(): string
+    public function name(): string
     {
-        return $this->identifier;
+        return $this->name;
     }
 
     /**
      * Returns the value assigned to the constant declaration.
      *
-     * @return mixed|string
+     * @return mixed|string|int
      */
-    public function key(): string
+    public function key()
     {
         return $this->key;
     }
@@ -301,7 +343,7 @@ abstract class Enum
     /**
      * Returns true if this instance is equal to the given key or Enum instance.
      *
-     * @param Enum|string $compare
+     * @param static|mixed $compare
      *
      * @return bool
      * @throws InvalidEnumException
@@ -309,13 +351,13 @@ abstract class Enum
     public function is($compare): bool
     {
         if ($compare instanceof self) {
-            return $compare->identifier() === $this->identifier();
+            return $compare->name() === $this->name();
         }
 
-        if (\is_string($compare)) {
+        if (\is_scalar($compare)) {
             return $compare === $this->key();
         }
 
-        throw new InvalidEnumException('Enum or string expected but ' . \gettype($compare) . ' given.');
+        throw new InvalidEnumException('Enum instance or key (scalar) expected but ' . \gettype($compare) . ' given.');
     }
 }
