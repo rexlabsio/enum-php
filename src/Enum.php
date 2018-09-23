@@ -296,7 +296,7 @@ abstract class Enum
      */
     public static function isValidName(string $name): bool
     {
-        return isset(static::namesAndKeys()[$name]);
+        return array_key_exists($name, static::namesAndKeys());
     }
 
     /**
