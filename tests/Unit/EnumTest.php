@@ -10,7 +10,7 @@ use Rexlabs\Enum\Exceptions\InvalidValueException;
 use Rexlabs\Enum\Tests\Stub\Animal;
 use Rexlabs\Enum\Tests\Stub\DuplicateKey;
 use Rexlabs\Enum\Tests\Stub\Fruit;
-use Rexlabs\Enum\Tests\Stub\Bevs;
+use Rexlabs\Enum\Tests\Stub\Beverage;
 use Rexlabs\Enum\Tests\Stub\Number;
 
 class EnumTest extends TestCase
@@ -203,14 +203,14 @@ class EnumTest extends TestCase
 
     public function test_get_key_by_value()
     {
-        $this->assertEquals(Bevs::BREW, Bevs::keyForValue('Corona'));
-        $this->assertEquals(Bevs::RUM, Bevs::keyForValue('Bundaberg'));
+        $this->assertEquals(Beverage::BREW, Beverage::keyForValue('Corona'));
+        $this->assertEquals(Beverage::RUM, Beverage::keyForValue('Bundaberg'));
     }
 
     public function test_get_key_by_invalid_value_throws_exception()
     {
         $this->expectException(InvalidValueException::class);
-        $this->assertEquals(Bevs::BREW, Bevs::keyForValue('Water'));
+        $this->assertEquals(Beverage::BREW, Beverage::keyForValue('Water'));
     }
 
     public function test_get_key_by_duplicate_value_returns_first()
