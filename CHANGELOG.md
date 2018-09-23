@@ -1,4 +1,7 @@
-# [Unreleased]
+# 2.0.0
+
+This release is a significant overhaul of the existing API, and therefore introduces breaking changes.
+See the list of updates below, and consult the [README](./README.md) for examples and details of the new API.
 
 - Add Enum::instanceFromKey($key)
 - **Breaking** Change `$instance->identifier` to `$instance->name()`
@@ -25,7 +28,6 @@ which maps keys to `null` values.
 - Add `Enum::valueForName($name)` for completeness
 
 # 1.1.0
-- **Breaki
 
 - Add flip() and fromValue()
 
