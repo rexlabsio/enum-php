@@ -242,4 +242,10 @@ class EnumTest extends TestCase
         $this->expectException(InvalidKeyException::class);
         Animal::instanceFromKey('_invalid_key_');
     }
+
+    public function test_instantiate_with_invalid_name_throws_exception()
+    {
+        $this->expectException(InvalidEnumException::class);
+        Animal::INVALID_KEY();
+    }
 }
