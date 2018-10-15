@@ -132,9 +132,6 @@ abstract class Enum
     public static function __callStatic($name, $arguments)
     {
         $key = static::keyForName($name);
-        if ($key === null) {
-            throw new InvalidEnumException("Invalid constant name '{$name}' in " . static::class);
-        }
 
         return new static($name, $key, static::valueForKey($key));
     }
