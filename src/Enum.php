@@ -354,7 +354,9 @@ abstract class Enum
         if (\is_scalar($compare)) {
             return $compare === $this->key();
         }
+        
+        $given = \is_object($compare) ? \get_class($compare) . ' instance' : \gettype($compare);
 
-        throw new InvalidEnumException('Enum instance or key (scalar) expected but ' . \gettype($compare) . ' given.');
+        throw new InvalidEnumException('Enum instance or key (scalar) expected but ' . $given . ' given.');
     }
 }
