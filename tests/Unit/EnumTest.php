@@ -187,7 +187,15 @@ class EnumTest extends TestCase
     public function test_comparing_enum_to_an_invalid_argument_throws_exception()
     {
         $this->expectException(InvalidEnumException::class);
+        $this->expectExceptionMessage('Enum instance or key (scalar) expected but array given.');
         $this->assertTrue(Fruit::APPLE()->is([]));
+    }
+
+    public function test_comparing_enum_to_an_invalid_object_throws_exception()
+    {
+        $this->expectException(InvalidEnumException::class);
+        $this->expectExceptionMessage('Enum instance or key (scalar) expected but stdClass instance given.');
+        $this->assertTrue(Fruit::APPLE()->is((object) []));
     }
 
     public function test_that_getting_an_instance_from_an_invalid_name_throws_exception()
