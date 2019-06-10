@@ -1,3 +1,7 @@
+# 2.0.1
+
+- Show class name in error when comparing enum with an invalid object.
+
 # 2.0.0
 
 This release is a significant overhaul of the existing API, and therefore introduces breaking changes.
