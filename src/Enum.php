@@ -147,7 +147,7 @@ abstract class Enum
     public static function keyForName(string $name)
     {
         $key = static::namesAndKeys()[$name] ?? null;
-        if (!$key) {
+        if ($key === null) {
             throw new InvalidEnumException("Invalid constant name: $name in " . static::class);
         }
 
