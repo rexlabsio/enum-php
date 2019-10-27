@@ -1,3 +1,7 @@
+# 2.0.2
+
+- Fix bug where const val=0 could not load instance
+
 # 2.0.1
 
 - Show class name in error when comparing enum with an invalid object.
