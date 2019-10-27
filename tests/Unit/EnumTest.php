@@ -235,6 +235,9 @@ class EnumTest extends TestCase
         $animal = Animal::instanceFromName('CAT');
         $this->assertInstanceOf(Animal::class, $animal);
 
+        $beverage = Beverage::instanceFromName('BREW');
+        $this->assertInstanceOf(Beverage::class, $beverage);
+
         $this->expectException(InvalidEnumException::class);
         Animal::instanceFromName('cat'); // Case sensitive
     }
@@ -243,6 +246,10 @@ class EnumTest extends TestCase
     {
         $animal = Animal::instanceFromKey('kitty');
         $this->assertTrue($animal->is(Animal::CAT()));
+
+        $beverage = Beverage::instanceFromKey(0);
+        $this->assertTrue($beverage->is(Beverage::BREW));
+        $this->assertFalse($beverage->is(Beverage::RED_WINE));
     }
 
     public function test_get_instance_via_invalid_key_throws_exception()
