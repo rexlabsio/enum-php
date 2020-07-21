@@ -29,7 +29,20 @@ First create a new class that extends `\Rexlabs\Enum\Enum` and do the following;
 ```php
 <?php
 
-class City extends \Rexlabs\Enum\Enum
+namespace Rexlabs\Enum\Readme;
+
+use Rexlabs\Enum\Enum;
+
+/**
+ * Class City
+ *
+ * @package Rexlabs\Enum\Readme
+ *
+ * @method static static BRISBANE()
+ * @method static static MELBOURNE()
+ * @method static static SYDNEY()
+ */
+class City extends Enum
 {
     const BRISBANE = 'Brisbane';
     const MELBOURNE = 'Melbourne';
@@ -40,9 +53,9 @@ class City extends \Rexlabs\Enum\Enum
     public static function map(): array 
     {
         return [
-            static::BRISBANE => ["state"=>"QLD", "population"=>""],
-            static::MELBOURNE => ["state"=>"VIC", "population"=>"5m"],
-            static::SYDNEY => ["state"=>"NSW", "population"=>"5m"],
+            self::BRISBANE => ["state"=>"QLD", "population"=>""],
+            self::MELBOURNE => ["state"=>"VIC", "population"=>"5m"],
+            self::SYDNEY => ["state"=>"NSW", "population"=>"5m"],
         ];
     }
     
