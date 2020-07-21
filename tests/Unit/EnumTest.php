@@ -64,4 +64,24 @@ class EnumTest extends TestCase
             ['you', 'filthy', 'animal'],
         ], Animal::values());
     }
+
+    public function test_can_get_instances()
+    {
+        $instances = Animal::instances();
+
+        foreach ($instances as $animal) {
+            self::assertInstanceOf(Animal::class, $animal);
+        }
+
+        $keys = array_map(function (Animal $animal) {
+            return $animal->key();
+        }, $instances);
+
+        self::assertEquals([
+            Animal::CAT,
+            Animal::DOG,
+            Animal::HORSE,
+            Animal::PIGEON,
+        ], $keys);
+    }
 }

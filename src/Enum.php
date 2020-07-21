@@ -64,6 +64,18 @@ abstract class Enum
     }
 
     /**
+     * Return set of every instance
+     *
+     * @return static[]
+     */
+    public static function instances(): array
+    {
+        return array_map(function ($key) {
+            return self::instanceFromKey($key);
+        }, self::keys());
+    }
+
+    /**
      * Returns a cached version of the map
      * It not only ensures the array supplied by map() is indexed by key,
      * it allows map() to do any intensive one-off operations.

@@ -1,3 +1,7 @@
+# 2.1.0
+
+- Add Enum::instances method to load set of all instances
+
 # 2.0.2
 
 - Fix bug where const val=0 could not load instance
