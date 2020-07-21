@@ -4,6 +4,16 @@ namespace Rexlabs\Enum\Tests\Stub;
 
 use Rexlabs\Enum\Enum;
 
+/**
+ * Class Animal
+ *
+ * @package Rexlabs\Enum\Tests\Stub
+ *
+ * @method static static CAT()
+ * @method static static DOG()
+ * @method static static HORSE()
+ * @method static static PIGEON()
+ */
 class Animal extends Enum
 {
     const CAT = 'kitty';

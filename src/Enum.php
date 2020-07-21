@@ -2,10 +2,19 @@
 
 namespace Rexlabs\Enum;
 
+use LogicException;
+use ReflectionClass;
+use ReflectionException;
 use Rexlabs\Enum\Exceptions\DuplicateKeyException;
 use Rexlabs\Enum\Exceptions\InvalidEnumException;
 use Rexlabs\Enum\Exceptions\InvalidKeyException;
 use Rexlabs\Enum\Exceptions\InvalidValueException;
+
+use function count;
+use function get_class;
+use function gettype;
+use function is_object;
+use function is_scalar;
 
 /**
  * Enum implementation.
@@ -18,7 +27,7 @@ abstract class Enum
     /** @var array Cache of constant name => key per class */
     public static $namesToKeysMap = [];
 
-    /** @var array Cache of key => value per class (santized version of what map() returns) */
+    /** @var array Cache of key => value per class (sanitized version of what map() returns) */
     public static $keysToValuesMap = [];
 
     /** @var string */
@@ -113,7 +122,13 @@ abstract class Enum
     {
         $class = static::class;
         if (!array_key_exists($class, static::$namesToKeysMap)) {
-            static::$namesToKeysMap[$class] = (new \ReflectionClass($class))->getConstants();
+            try {
+                static::$namesToKeysMap[$class] = (new ReflectionClass($class))->getConstants();
+            } catch (ReflectionException $e) {
+                // Reflection exceptions should be "unchecked" as they pertain
+                // to errors in code.
+                throw new LogicException($e->getMessage(), $e->getCode(), $e);
+            }
         }
 
         return static::$namesToKeysMap[$class];
@@ -195,7 +210,7 @@ abstract class Enum
     public static function nameForKey($key): string
     {
         $matches = array_keys(static::namesAndKeys(), $key, true);
-        $numMatches = \count($matches);
+        $numMatches = count($matches);
         if (!$numMatches) {
             throw new InvalidKeyException("Invalid key: $key in " . static::class);
         }
@@ -351,12 +366,16 @@ abstract class Enum
             return $compare->name() === $this->name();
         }
 
-        if (\is_scalar($compare)) {
+        if (is_scalar($compare)) {
             return $compare === $this->key();
         }
         
-        $given = \is_object($compare) ? \get_class($compare) . ' instance' : \gettype($compare);
+        $given = is_object($compare)
+            ? get_class($compare) . ' instance'
+            : gettype($compare);
 
-        throw new InvalidEnumException('Enum instance or key (scalar) expected but ' . $given . ' given.');
+        throw new InvalidEnumException(
+            'Enum instance or key (scalar) expected but ' . $given . ' given.'
+        );
     }
 }
