@@ -29,7 +29,20 @@ First create a new class that extends `\Rexlabs\Enum\Enum` and do the following;
 ```php
 <?php
 
-class City extends \Rexlabs\Enum\Enum
+namespace Rexlabs\Enum\Readme;
+
+use Rexlabs\Enum\Enum;
+
+/**
+ * Class City
+ *
+ * @package Rexlabs\Enum\Readme
+ *
+ * @method static static BRISBANE()
+ * @method static static MELBOURNE()
+ * @method static static SYDNEY()
+ */
+class City extends Enum
 {
     const BRISBANE = 'Brisbane';
     const MELBOURNE = 'Melbourne';
@@ -40,9 +53,9 @@ class City extends \Rexlabs\Enum\Enum
     public static function map(): array 
     {
         return [
-            static::BRISBANE => ["state"=>"QLD", "population"=>""],
-            static::MELBOURNE => ["state"=>"VIC", "population"=>"5m"],
-            static::SYDNEY => ["state"=>"NSW", "population"=>"5m"],
+            self::BRISBANE => ["state"=>"QLD", "population"=>""],
+            self::MELBOURNE => ["state"=>"VIC", "population"=>"5m"],
+            self::SYDNEY => ["state"=>"NSW", "population"=>"5m"],
         ];
     }
     
@@ -158,6 +171,10 @@ Returns an array which maps the constant keys to a value.
 This method can be optionally implemented in a sub-class.
 The default implementation returns an array of keys mapped to `null`.
 
+### instances()
+
+Returns an array of Enum instances.
+
 ### keys()
 
 Returns an array of constant keys.
@@ -173,7 +190,7 @@ Returns an array of all the constant names declared with the class.
 
 ### namesAndKeys()
 
-Returns an associative array of CONSTANT_NAME => key, for all of the constant names declared within the class.
+Returns an associative array of CONSTANT_NAME => key, for all the constant names declared within the class.
 
 ### keyForName(string $name)
 
