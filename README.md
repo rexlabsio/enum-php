@@ -158,6 +158,10 @@ Returns an array which maps the constant keys to a value.
 This method can be optionally implemented in a sub-class.
 The default implementation returns an array of keys mapped to `null`.
 
+### instances()
+
+Returns an array of Enum instances.
+
 ### keys()
 
 Returns an array of constant keys.
@@ -173,7 +177,7 @@ Returns an array of all the constant names declared with the class.
 
 ### namesAndKeys()
 
-Returns an associative array of CONSTANT_NAME => key, for all of the constant names declared within the class.
+Returns an associative array of CONSTANT_NAME => key, for all the constant names declared within the class.
 
 ### keyForName(string $name)
 
