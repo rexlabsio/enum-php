@@ -381,7 +381,7 @@ abstract class Enum
         if (is_scalar($compare)) {
             return $compare === $this->key();
         }
-        
+
         $given = is_object($compare)
             ? get_class($compare) . ' instance'
             : gettype($compare);
@@ -389,5 +389,50 @@ abstract class Enum
         throw new InvalidEnumException(
             'Enum instance or key (scalar) expected but ' . $given . ' given.'
         );
+    }
+
+    /**
+     * Returns false if this instance is equal to the given key or Enum instance.
+     *
+     * @param static|mixed $compare
+     *
+     * @return bool
+     * @throws InvalidEnumException
+     */
+    public function isNot($compare): bool
+    {
+        return !$this->is($compare);
+    }
+
+    /**
+     * Returns true if this instance exists in the list of given keys or Enum instances.
+     *
+     * @param static[]|mixed[] $compares
+     *
+     * @return bool
+     * @throws InvalidEnumException
+     */
+    public function isAnyOf(array $compares): bool
+    {
+        foreach($compares as $compare){
+            if( $this->is($compare) ){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns false if this instance exists in the list of given keys or Enum instances.
+     *
+     * @param static[]|mixed[] $compares
+     *
+     * @return bool
+     * @throws InvalidEnumException
+     */
+    public function isNoneOf(array $compares): bool
+    {
+        return !$this->isAnyOf($compares);
     }
 }
