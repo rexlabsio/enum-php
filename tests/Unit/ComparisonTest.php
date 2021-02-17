@@ -34,6 +34,24 @@ class ComparisonTest extends TestCase
         self::assertTrue(Number::TWENTY_FOUR()->is(24));
     }
 
+    public function test_is_not_comparison()
+    {
+        self::assertFalse(Fruit::APPLE()->isNot(Fruit::APPLE()));
+        self::assertTrue(Fruit::APPLE()->isNot(Fruit::BANANA()));
+    }
+
+    public function test_is_any_of_comparison()
+    {
+        self::assertTrue(Fruit::APPLE()->isAnyOf([Fruit::APPLE(), Fruit::BANANA()]));
+        self::assertFalse(Fruit::APPLE()->isAnyOf([Fruit::BANANA(), Fruit::CHERRY(), Fruit::EGGPLANT()]));
+    }
+
+    public function test_is_none_of_comparison()
+    {
+        self::assertFalse(Fruit::APPLE()->isNoneOf([Fruit::APPLE(), Fruit::BANANA()]));
+        self::assertTrue(Fruit::APPLE()->isNoneOf([Fruit::BANANA(), Fruit::CHERRY(), Fruit::EGGPLANT()]));
+    }
+
     public function test_comparing_enum_to_an_invalid_argument_throws_exception()
     {
         $this->expectException(InvalidEnumException::class);

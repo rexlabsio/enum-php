@@ -83,6 +83,9 @@ $city->value()['population'];        // null - no value mapped
 $city->is(City::BRISBANE);           // (boolean)true
 $city->is(City::BRISBANE());         // (boolean)true
 $city->is(City::SYDNEY());           // (boolean)false
+$city->isNot(City::SYDNEY());        // (boolean)true
+$city->isAnyOf([City::BRISBANE()]);  // (boolean)true
+$city->isNoneOf([City::BRISBANE()]); // (boolean)false
 
 // Or ...
 City::SYDNEY()->key();               // "Sydney"
