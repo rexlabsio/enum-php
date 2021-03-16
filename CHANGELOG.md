@@ -1,3 +1,7 @@
+# 2.2.0
+
+- Add `isNot`, `isAnyOf`, `isNoneOf` expressive methods
+
 # 2.1.0
 
 - Add Enum::instances method to load set of all instances
