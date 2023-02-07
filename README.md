@@ -1,5 +1,5 @@
 > **Warning**
-> If you are using PHP 8.1 or higher, we recommend you use [native php enums](https://www.php.net/manual/en/language.enumerations.examples.php) in place > of this package.
+> If you are using PHP 8.1 or higher, we recommend you use [native php enums](https://www.php.net/manual/en/language.enumerations.examples.php) in place  of this package.
 > 
 > We may release some maintenance patches but support for this package is otherwise being discontinued.
 >
