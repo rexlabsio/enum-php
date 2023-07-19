@@ -1,3 +1,5 @@
+# Deprecated
+
 > **Warning**
 > If you are using PHP 8.1 or higher, we recommend you use [native php enums](https://www.php.net/manual/en/language.enumerations.examples.php) in place  of this package.
 > 
@@ -9,8 +11,6 @@
 # Enum PHP Library
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/rexlabsio/enum-php.svg?branch=master)](https://travis-ci.org/rexlabsio/enum-php)
-[![Code Coverage](https://scrutinizer-ci.com/g/rexlabsio/enum-php/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/rexlabsio/enum-php/?branch=master)
 [![Packagist](https://img.shields.io/packagist/v/rexlabs/enum.svg)](https://packagist.org/packages/rexlabs/enum)
 
 
