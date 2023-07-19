@@ -1,3 +1,7 @@
+# 2.3.0
+
+- Limit support explicitly to PHP 7.0-8.2
+
 # 2.2.0
 
 - Add `isNot`, `isAnyOf`, `isNoneOf` expressive methods
