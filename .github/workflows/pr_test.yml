@@ -1,0 +1,26 @@
+name: PR Tests
+
+on:
+  pull_request:
+    types: [ synchronize, opened, reopened ]
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["7.0", "7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          docker run -v $(pwd):/app php:${{ matrix.php }}-cli-alpine /bin/sh -c \
+            'cd /app && curl -sS https://getcomposer.org/installer | php -- --filename=composer && php composer update --prefer-stable --prefer-dist --no-interaction && rm composer'
+
+      - name: Run tests
+        run: |
+          docker run -v $(pwd):/app php:${{ matrix.php }}-cli-alpine /bin/sh -c 'cd /app && ./vendor/bin/phpunit'
