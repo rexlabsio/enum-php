@@ -1,3 +1,8 @@
+# 2.4.0
+
+- Add support for PHP 8.3, 8.4
+- Limit support explicitly to PHP 7.0-8.4
+
 # 2.3.0
 
 - Limit support explicitly to PHP 7.0-8.2
